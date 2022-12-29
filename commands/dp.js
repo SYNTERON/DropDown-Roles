@@ -1,27 +1,27 @@
 // require Nuggies
 const Nuggies = require('nuggies');
 const Discord = require('discord.js');
-/**
- * @param {Discord.Client} client
- * @param {Discord.Message} message
- * @param {String[]} args
- */
+
+
+
 
 module.exports.run = async (client, message, args) => {
 	if(!message.member.hasPermission('MANAGE_SERVER')) return message.reply('You do not have the permission \`MANAGE_SERVER\`');
     const dpmanager = new Nuggies.dropdownroles();
-	message.channel.send('Send messages in `roleID label emoji` syntax! Once finished say `done`.');
+	message.channel.send('**Dropdown role process started!**\nplease type your roles in the follwing order, then say "done" when finished!\n\n`<roleID> <label> <emoji>`');
 
-	/**
-	 * @param {Discord.Message} m
-	 */
+
+
+
+
+
 	const filter = m => m.author.id === message.author.id;
 	const collector = message.channel.createMessageCollector(filter, { max: 10000 });
 
 	collector.on('collect', async (msg) => {
 		if (!msg.content) return message.channel.send('Invalid syntax');
 		if (msg.content.toLowerCase() == 'done') return collector.stop('DONE');
-		if (!msg.content.split(' ')[0].match(/[0-9]{18}/g)) return message.channel.send('Invalid syntax');
+
 
 		const roleid = msg.content.split(' ')[0];
 		const role = message.guild.roles.cache.get(roleid);
@@ -41,18 +41,20 @@ module.exports.run = async (client, message, args) => {
 		if (reason == 'DONE') {
 			const embed = new Discord.MessageEmbed()
 				.setTitle('Dropdown roles!')
-				.setDescription('Click on the buttons to get the specific role or vice-versa')
-				.setColor('RANDOM')
-				.setTimestamp();
+				.setDescription('Click on the buttons to grant yourself a role!')
+        .setImage('https://media.discordapp.net/attachments/900348591560871976/919417154896556074/roles-discord.gif')
+				.setColor('#2de2e2')
+				.setTimestamp()
+        .setFooter("Bot made by Coder Fredi")
 			Nuggies.dropdownroles.create({ message: message, content: embed, role: dpmanager, channelID: message.channel.id })
 		}
 	});
 };
 
 module.exports.config = {
-	name: 'create-dp',
+	name: 'dp',
 	description: 'Creates dropdown role!',
-	usage: '?create-dp',
+	usage: '.dp',
 	botPerms: [],
 	userPerms: ['MANAGE_GUILD'],
 	aliases: [],
